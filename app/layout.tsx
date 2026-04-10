@@ -9,8 +9,8 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Alerta Verde — Dashboard',
-  description: 'Monitoreo de anomalías en paneles solares - Palmira, Valle del Cauca',
+  title: 'Alerta Verde — Monitoreo Solar',
+  description: 'Sistema de monitoreo de anomalias en paneles solares - Palmira, Valle del Cauca',
 };
 
 export default function RootLayout({

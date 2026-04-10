@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { FiAlertOctagon, FiCheck, FiX } from 'react-icons/fi';
 import { insertSimulatedReading } from '@/lib/queries';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -29,22 +30,22 @@ export default function SimulatorButton() {
     idle: {
       text: 'Simular lectura critica',
       bg: 'bg-[#ef4444] hover:bg-[#dc2626]',
-      icon: '🔴',
+      icon: <FiAlertOctagon />,
     },
     loading: {
       text: 'Enviando lectura...',
       bg: 'bg-[#ef4444]/70 cursor-wait',
-      icon: '',
+      icon: null,
     },
     success: {
       text: 'Alerta enviada — revisa Telegram',
-      bg: 'bg-[#10b981]',
-      icon: '✓',
+      bg: 'bg-[#32D04F]',
+      icon: <FiCheck />,
     },
     error: {
       text: 'Error — reintenta',
       bg: 'bg-[#ef4444]',
-      icon: '✕',
+      icon: <FiX />,
     },
   };
 
@@ -62,9 +63,9 @@ export default function SimulatorButton() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-        ) : (
+        ) : icon ? (
           <span>{icon}</span>
-        )}
+        ) : null}
         {text}
       </button>
     </div>

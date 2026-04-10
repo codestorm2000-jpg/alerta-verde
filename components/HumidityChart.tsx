@@ -104,7 +104,7 @@ export default function HumidityChart() {
             <Line
               type="monotone"
               dataKey="sensor01"
-              stroke="#10b981"
+              stroke="#32D04F"
               strokeWidth={2}
               dot={<CustomDot />}
               connectNulls

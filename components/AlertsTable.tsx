@@ -33,7 +33,7 @@ const severidadBadge: Record<string, string> = {
 
 const estadoBadge: Record<string, string> = {
   pendiente: 'bg-yellow-500/20 text-yellow-400',
-  atendida: 'bg-green-500/20 text-green-400',
+  atendida: 'bg-[#32D04F]/20 text-[#32D04F]',
   descartada: 'bg-gray-500/20 text-gray-400',
 };
 

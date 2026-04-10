@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FiDatabase, FiAlertTriangle, FiAlertCircle, FiTrendingUp } from 'react-icons/fi';
 import { fetchKpis } from '@/lib/queries';
 import type { KpiData } from '@/types';
 
@@ -28,25 +29,25 @@ export default function KpiCards() {
 
   const cards = [
     {
-      icon: '📊',
+      icon: <FiDatabase className="text-[#32D04F]" />,
       label: 'Total lecturas',
       value: kpis.totalLecturas.toLocaleString(),
       accent: false,
     },
     {
-      icon: '⚠️',
+      icon: <FiAlertTriangle className="text-[#f59e0b]" />,
       label: 'Anomalías hoy',
       value: kpis.anomaliasHoy.toLocaleString(),
       accent: hasAnomalies,
     },
     {
-      icon: '🔴',
+      icon: <FiAlertCircle className="text-[#ef4444]" />,
       label: 'Sensor crítico',
       value: kpis.sensorCritico,
       accent: hasAnomalies,
     },
     {
-      icon: '📈',
+      icon: <FiTrendingUp className="text-[#3b82f6]" />,
       label: 'Tasa de anomalías',
       value: `${kpis.tasaAnomalias}%`,
       accent: false,
@@ -63,6 +64,7 @@ export default function KpiCards() {
           }`}
         >
           <span className="text-3xl">{card.icon}</span>
+
           <div>
             <p className="text-3xl font-bold text-[#f8fafc]">{card.value}</p>
             <p className="text-sm text-[#94a3b8]">{card.label}</p>

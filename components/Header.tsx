@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { fetchLastLectura } from '@/lib/queries';
 
 function timeAgoShort(dateStr: string | null): string {
@@ -40,13 +41,13 @@ export default function Header() {
     <header className="bg-[#0f172a] border-b border-[#334155] px-6 py-4">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl font-bold text-[#f8fafc] flex items-center gap-2">
-          🌱 Alerta Verde
+          <Image src="/logo.png" alt="Alerta Verde" width={32} height={32} /> Alerta Verde
         </h1>
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <span
               className={`h-2.5 w-2.5 rounded-full ${
-                isRecent ? 'bg-[#10b981] animate-pulse' : 'bg-[#ef4444]'
+                isRecent ? 'bg-[#32D04F] animate-pulse' : 'bg-[#ef4444]'
               }`}
             />
             <span className="text-[#94a3b8]">
