@@ -69,3 +69,44 @@ export interface ChartDataPoint {
   temp_sensor02?: number;
   temp_sensor03?: number;
 }
+
+export interface AnomalyBySensor {
+  sensor: string;
+  ubicacion: string;
+  total: number;
+  anomalias: number;
+  tasa: number;
+}
+
+export interface AnomalyTypeCount {
+  tipo: string;
+  count: number;
+}
+
+export interface DailyAnomalyTrend {
+  fecha: string;
+  anomalias: number;
+  total: number;
+}
+
+export interface SensorEfficiency {
+  sensor: string;
+  ubicacion: string;
+  avgEficiencia: number;
+}
+
+export interface AlertaKpis {
+  pendientes: number;
+  atendidas: number;
+  descartadas: number;
+  total: number;
+}
+
+export interface Tecnico {
+  id: string;
+  nombre: string;
+  telegram_chat_id: string | null;
+  especialidad: string;
+  activo: boolean;
+  created_at: string;
+}

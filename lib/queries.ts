@@ -1,5 +1,8 @@
 import { supabase } from './supabase';
-import type { KpiData, AlertaConSensor, ChartDataPoint } from '@/types';
+import type {
+  KpiData, AlertaConSensor, ChartDataPoint,
+  AnomalyBySensor, AnomalyTypeCount, DailyAnomalyTrend, SensorEfficiency, AlertaKpis, Tecnico,
+} from '@/types';
 
 export async function fetchKpis(): Promise<KpiData> {
   const today = new Date();
@@ -153,4 +156,141 @@ export async function insertSimulatedReading(): Promise<{ success: boolean; erro
 
   if (error) return { success: false, error: error.message };
   return { success: true };
+}
+
+// ── Reportes ──
+
+export async function fetchReportesData(): Promise<{
+  anomalyBySensor: AnomalyBySensor[];
+  anomalyTypes: AnomalyTypeCount[];
+  dailyTrend: DailyAnomalyTrend[];
+  sensorEfficiency: SensorEfficiency[];
+}> {
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [allRes, typesRes, trendRes, effRes] = await Promise.all([
+    supabase.from('lecturas').select('sensor_id, anomalia, sensores(codigo, ubicacion_nombre)'),
+    supabase.from('lecturas').select('tipo_anomalia').eq('anomalia', true),
+    supabase.from('lecturas').select('fecha, anomalia').gte('fecha', sevenDaysAgo),
+    supabase.from('lecturas').select('eficiencia_pct, sensores(codigo, ubicacion_nombre)'),
+  ]);
+
+  // Anomalias por sensor
+  const sensorMap: Record<string, { total: number; anomalias: number; ubicacion: string }> = {};
+  for (const row of allRes.data ?? []) {
+    const s = row.sensores as unknown as { codigo: string; ubicacion_nombre: string };
+    const key = s?.codigo ?? row.sensor_id;
+    if (!sensorMap[key]) sensorMap[key] = { total: 0, anomalias: 0, ubicacion: s?.ubicacion_nombre ?? '' };
+    sensorMap[key].total++;
+    if (row.anomalia) sensorMap[key].anomalias++;
+  }
+  const anomalyBySensor: AnomalyBySensor[] = Object.entries(sensorMap).map(([sensor, v]) => ({
+    sensor,
+    ubicacion: v.ubicacion,
+    total: v.total,
+    anomalias: v.anomalias,
+    tasa: v.total > 0 ? Math.round((v.anomalias / v.total) * 1000) / 10 : 0,
+  }));
+
+  // Tipos de anomalia
+  const typeCount: Record<string, number> = {};
+  for (const row of typesRes.data ?? []) {
+    const t = row.tipo_anomalia ?? 'desconocido';
+    typeCount[t] = (typeCount[t] ?? 0) + 1;
+  }
+  const anomalyTypes: AnomalyTypeCount[] = Object.entries(typeCount)
+    .map(([tipo, count]) => ({ tipo, count }))
+    .sort((a, b) => b.count - a.count);
+
+  // Tendencia diaria
+  const dayMap: Record<string, { total: number; anomalias: number }> = {};
+  for (const row of trendRes.data ?? []) {
+    const day = row.fecha?.slice(0, 10) ?? '';
+    if (!dayMap[day]) dayMap[day] = { total: 0, anomalias: 0 };
+    dayMap[day].total++;
+    if (row.anomalia) dayMap[day].anomalias++;
+  }
+  const dailyTrend: DailyAnomalyTrend[] = Object.entries(dayMap)
+    .map(([fecha, v]) => ({ fecha, ...v }))
+    .sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+  // Eficiencia por sensor
+  const effMap: Record<string, { sum: number; count: number; ubicacion: string }> = {};
+  for (const row of effRes.data ?? []) {
+    const s = row.sensores as unknown as { codigo: string; ubicacion_nombre: string };
+    const key = s?.codigo ?? '';
+    if (!effMap[key]) effMap[key] = { sum: 0, count: 0, ubicacion: s?.ubicacion_nombre ?? '' };
+    effMap[key].sum += row.eficiencia_pct ?? 0;
+    effMap[key].count++;
+  }
+  const sensorEfficiency: SensorEfficiency[] = Object.entries(effMap).map(([sensor, v]) => ({
+    sensor,
+    ubicacion: v.ubicacion,
+    avgEficiencia: v.count > 0 ? Math.round((v.sum / v.count) * 10) / 10 : 0,
+  }));
+
+  return { anomalyBySensor, anomalyTypes, dailyTrend, sensorEfficiency };
+}
+
+// ── Alertas (full) ──
+
+export async function fetchAlertasFull(): Promise<AlertaConSensor[]> {
+  const { data, error } = await supabase
+    .from('alertas')
+    .select('*, sensores(codigo)')
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (error || !data) return [];
+  return data as AlertaConSensor[];
+}
+
+export async function fetchAlertaKpis(): Promise<AlertaKpis> {
+  const { data } = await supabase.from('alertas').select('estado');
+  const rows = data ?? [];
+  return {
+    pendientes: rows.filter((r) => r.estado === 'pendiente').length,
+    atendidas: rows.filter((r) => r.estado === 'atendida').length,
+    descartadas: rows.filter((r) => r.estado === 'descartada').length,
+    total: rows.length,
+  };
+}
+
+export async function updateAlertaEstado(
+  id: string,
+  estado: 'pendiente' | 'atendida' | 'descartada'
+): Promise<boolean> {
+  const { error } = await supabase.from('alertas').update({ estado }).eq('id', id);
+  return !error;
+}
+
+// ── Tecnicos ──
+
+export async function fetchTecnicos(): Promise<Tecnico[]> {
+  const { data, error } = await supabase
+    .from('tecnicos')
+    .select('*')
+    .order('created_at', { ascending: true });
+  if (error || !data) return [];
+  return data as Tecnico[];
+}
+
+export async function updateTecnico(
+  id: string,
+  updates: Partial<Pick<Tecnico, 'nombre' | 'telegram_chat_id' | 'especialidad' | 'activo'>>
+): Promise<boolean> {
+  const { error } = await supabase.from('tecnicos').update(updates).eq('id', id);
+  return !error;
+}
+
+export async function fetchAlertasPorSensor(): Promise<Record<string, number>> {
+  const { data } = await supabase
+    .from('alertas')
+    .select('sensor_id, sensores(codigo)')
+    .eq('estado', 'pendiente');
+  const counts: Record<string, number> = {};
+  for (const row of data ?? []) {
+    const codigo = (row.sensores as unknown as { codigo: string })?.codigo ?? row.sensor_id;
+    counts[codigo] = (counts[codigo] ?? 0) + 1;
+  }
+  return counts;
 }
