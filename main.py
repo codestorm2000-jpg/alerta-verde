@@ -39,7 +39,7 @@ def health():
 def predict(lectura: LecturaInput):
     # Feature engineering idéntico al entrenamiento
     datos = {
-        "temperatura_c": lectura.temperatura_c,
+        "temperatura_c": lectura.temperatura_ambiente_c,
         "humedad_pct": lectura.humedad_pct,
         "sensor_id_sensor01": 1 if lectura.sensor_id == "sensor01" else 0,
         "sensor_id_sensor02": 1 if lectura.sensor_id == "sensor02" else 0,
