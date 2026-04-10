@@ -6,8 +6,8 @@
     "sensor_id_sensor02",
     "sensor_id_sensor03"
   ],
-  "version": "2.0",
+  "version": "3.0",
   "modelo": "RandomForestClassifier",
   "target": "anomalia",
-  "notas": "humedad_pct es el feature principal (correlacion +0.28 datos reales)"
+  "notas": "v3: anomalias balanceadas para sensor01/02/03. Criterio: humedad>85% AND temp>38C"
 }
