@@ -140,17 +140,15 @@ export async function fetchLastLectura(): Promise<string | null> {
 export async function insertSimulatedReading(): Promise<{ success: boolean; error?: string }> {
   const { error } = await supabase.from('lecturas').insert({
     sensor_id: '032cd4a6-03c0-4f62-9588-812c89ce13fc',
-    temperatura_ambiente_c: 24.6,
-    temperatura_panel_c: 38.2,
-    humedad_pct: 80.0,
-    irradiancia_wm2: 650.0,
-    voltaje_dc_v: 342.5,
-    corriente_dc_a: 7.8,
-    potencia_kw: 2.67,
-    eficiencia_pct: 14.2,
-    anomalia: false,
-    tipo_anomalia: 'normal',
-    probabilidad_anomalia: 0.0,
+    temperatura_ambiente_c: 48.5,
+    temperatura_panel_c: 79.0,
+    humedad_pct: 98.0,
+    irradiancia_wm2: 940.0,
+    voltaje_dc_v: 41.5,
+    corriente_dc_a: 10.3,
+    potencia_kw: 0.428,
+    eficiencia_pct: 16.2,
+    velocidad_viento_ms: 0.6,
     usuario_registro: 'simulador_pitch',
   });
 
