@@ -49,7 +49,7 @@ export default function LandingPage() {
           <span className="text-[#32D04F]">con inteligencia artificial</span>
         </h2>
         <p className="text-lg text-[#94a3b8] max-w-2xl mx-auto mb-10">
-          Alerta Verde detecta anomalias en tiempo real usando sensores IoT y un modelo
+          Senza Green detecta anomalias en tiempo real usando sensores IoT y un modelo
           Random Forest. Recibe alertas antes de que un fallo afecte tu produccion de energia.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -107,7 +107,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-[#334155] py-8 text-center text-sm text-[#94a3b8]">
-        Alerta Verde — Hackathon 2026 — Palmira, Valle del Cauca
+        Senza Green — Hackathon 2026 — Palmira, Valle del Cauca
       </footer>
 
       <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />

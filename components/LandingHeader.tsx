@@ -12,7 +12,7 @@ export default function LandingHeader({ onLoginClick, onRegisterClick }: Props) 
     <header className="sticky top-0 z-30 bg-[#0f172a]/95 backdrop-blur border-b border-[#334155]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#f8fafc] flex items-center gap-2">
-          <Image src="/logo.png" alt="Alerta Verde" width={32} height={32} /> Alerta Verde
+          <Image src="/logo.png" alt="Senza Green" width={32} height={32} /> Senza Green
         </h1>
         <div className="flex items-center gap-3">
           <button

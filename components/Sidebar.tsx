@@ -25,7 +25,7 @@ export default function Sidebar() {
     <nav className="flex flex-col h-full">
       <div className="p-5 border-b border-[#334155]">
         <h2 className="text-lg font-bold text-[#f8fafc] flex items-center gap-2">
-          <Image src="/logo.png" alt="Alerta Verde" width={28} height={28} /> Alerta Verde
+          <Image src="/logo.png" alt="Senza Green" width={28} height={28} /> Senza Green
         </h2>
         <p className="text-xs text-[#94a3b8] mt-1">Panel de monitoreo</p>
       </div>

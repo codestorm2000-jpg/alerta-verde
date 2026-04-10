@@ -1,4 +1,4 @@
-# Alerta Verde — Dashboard
+# Senza Green — Dashboard
 
 Dashboard de monitoreo de anomalias en paneles solares.
 

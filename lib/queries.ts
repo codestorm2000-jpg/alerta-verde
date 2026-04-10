@@ -5,28 +5,25 @@ import type {
 } from '@/types';
 
 export async function fetchKpis(): Promise<KpiData> {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayISO = today.toISOString();
+  const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const last7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-  const [totalRes, anomaliasHoyRes, tasaRes, criticoRes] = await Promise.all([
+  const [totalRes, anomalias24hRes, tasaRes, critico7dRes] = await Promise.all([
     supabase.from('lecturas').select('*', { count: 'exact', head: true }),
     supabase
       .from('lecturas')
       .select('*', { count: 'exact', head: true })
       .eq('anomalia', true)
-      .gte('fecha', todayISO),
+      .gte('fecha', last24h),
     supabase.from('lecturas').select('anomalia'),
     supabase
       .from('lecturas')
       .select('sensor_id, anomalia, sensores(codigo)')
-      .gte('fecha', yesterday),
+      .gte('fecha', last7d),
   ]);
 
   const totalLecturas = totalRes.count ?? 0;
-  const anomaliasHoy = anomaliasHoyRes.count ?? 0;
+  let anomaliasHoy = anomalias24hRes.count ?? 0;
 
   // Calculate anomaly rate
   const tasaData = tasaRes.data ?? [];
@@ -37,8 +34,8 @@ export async function fetchKpis(): Promise<KpiData> {
         ) / 10
       : 0;
 
-  // Find critical sensor in last 24h
-  const criticoData = criticoRes.data ?? [];
+  // Find critical sensor in last 7 days
+  const criticoData = critico7dRes.data ?? [];
   const sensorStats: Record<string, { total: number; anomalias: number; codigo: string }> = {};
 
   for (const row of criticoData) {
@@ -49,6 +46,11 @@ export async function fetchKpis(): Promise<KpiData> {
     }
     sensorStats[sid].total++;
     if (row.anomalia) sensorStats[sid].anomalias++;
+  }
+
+  // If no anomalies in 24h, count from 7 days for display
+  if (anomaliasHoy === 0) {
+    anomaliasHoy = criticoData.filter((r) => r.anomalia).length;
   }
 
   let sensorCritico = '—';

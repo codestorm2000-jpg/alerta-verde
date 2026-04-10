@@ -41,7 +41,7 @@ export default function Header() {
     <header className="bg-[#0f172a] border-b border-[#334155] px-6 py-4">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl font-bold text-[#f8fafc] flex items-center gap-2">
-          <Image src="/logo.png" alt="Alerta Verde" width={32} height={32} /> Alerta Verde
+          <Image src="/logo.png" alt="Senza Green" width={32} height={32} /> Senza Green
         </h1>
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">

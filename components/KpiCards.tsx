@@ -36,13 +36,13 @@ export default function KpiCards() {
     },
     {
       icon: <FiAlertTriangle className="text-[#f59e0b]" />,
-      label: 'Anomalías hoy',
+      label: 'Anomalias recientes',
       value: kpis.anomaliasHoy.toLocaleString(),
       accent: hasAnomalies,
     },
     {
       icon: <FiAlertCircle className="text-[#ef4444]" />,
-      label: 'Sensor crítico',
+      label: 'Sensor critico (7d)',
       value: kpis.sensorCritico,
       accent: hasAnomalies,
     },
