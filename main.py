@@ -12,11 +12,20 @@ with open("columnas.json") as f:
     config = json.load(f)
 FEATURES = config["features"]
 
+# ✅ Nombres del schema nuevo (9 variables)
 class LecturaInput(BaseModel):
-    temperatura_c: float
+    sensor_id: str
+    fecha: str
+    irradiancia_wm2: float
+    temperatura_panel_c: float
+    temperatura_ambiente_c: float
     humedad_pct: float
-    sensor_id: str  # "sensor01", "sensor02" o "sensor03"
-
+    voltaje_dc_v: float
+    corriente_dc_a: float
+    potencia_kw: float
+    eficiencia_pct: float
+    velocidad_viento_ms: float
+    
 class PrediccionOutput(BaseModel):
     anomalia: bool
     probabilidad: float
